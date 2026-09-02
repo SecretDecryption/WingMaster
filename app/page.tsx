@@ -14,65 +14,11 @@ import {
   X,
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { FlavourTab, flavourSets, wingStyles } from '@/lib/data';
 
-const menuItems = [
-  {
-    title: 'Breaded wings',
-    copy: 'Crisp, juicy and coated in any flavour from the Wing Bible.',
-    image: '/breaded-wings.png',
-    note: 'The original',
-  },
-  {
-    title: 'Boneless wings',
-    copy: 'All-white chicken breast, golden fried and made for saucing.',
-    image: '/boneless-wings.png',
-    note: 'Easy eating',
-  },
-  {
-    title: 'Cauli wings',
-    copy: 'A crispy cauliflower bite with the full Wingmaster treatment.',
-    image: '/cauliflower-wings.png',
-    note: 'Plant-powered',
-  },
-];
-
-const flavourSets = {
-  'Most loved': [
-    ['Apple Pie BBQ', 'N', 'Tastes just like mom’s—only on wings.'],
-    ['Texas Gold', 'N', 'Mild BBQ meets sweet honey garlic.'],
-    ['Creamy Dill Pickle', 'N', 'Cool, tangy and unmistakably dill.'],
-    ['Jerk BBQ', 'S', 'Tre-made jerk spice with smoky BBQ.'],
-    ['French Toast', 'N', 'Real Canadian maple and icing sugar.'],
-    ['Peanut Butter & Jam', 'N', 'Yes, you read that right. A cult favourite.'],
-  ],
-  'No heat': [
-    ['Bell City BBQ', 'N', 'Tre-made smoky BBQ that reps the 519.'],
-    ['Arizona Gold', 'N', 'Bell City BBQ finished with honey garlic.'],
-    ['Garlic Parmesan', 'N', 'Garlic butter and plenty of parmesan.'],
-    ['Honey Garlic', 'N', 'Sweet, savoury and always a crowd-pleaser.'],
-    ['Sweet Caroline', 'N', 'A secret house sauce with a sweet side.'],
-    ['Raspberry Beret', 'N', 'Bright raspberry folded into BBQ sauce.'],
-  ],
-  Spicy: [
-    ['Buffalo Medium', 'S', 'The house signature buffalo medium.'],
-    ['Cajun Gold', 'S', 'Cajun dry spice with honey garlic.'],
-    ['Lemon Pepper', 'S', 'Pepper, butter and a bright lemon finish.'],
-    ['Ohio Gold', 'S', 'Medium sauce sweetened with honey garlic.'],
-    ['Sweet Chili Thai', 'S', 'Sticky, sweet, spicy and hard to share.'],
-    ['The Big Apple', 'S', 'Buffalo sauce meets Apple Pie BBQ.'],
-  ],
-  'Wild side': [
-    ['1983 Suicide', '3', 'Red Flame Mix with a medium BBQ finish.'],
-    ['Evil Medium', '3', 'The famous house suicide sauce.'],
-    ['Devilz Jooce', '350K', 'Tre-made Scotch bonnet pepper sauce.'],
-    ['Apocalava', '500K', 'Sweet Lava with a Red Savina kick.'],
-    ['Bell City Booo', '1M', 'Ghost pepper takes on Bell City BBQ.'],
-    ['Fast ’N Furious XX', '2M+', 'Extreme heat. Absolutely no shortcuts.'],
-  ],
-} as const;
-
-type FlavourTab = keyof typeof flavourSets;
+const menuItems = wingStyles;
 
 function getStoreStatus() {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -128,9 +74,9 @@ export default function Home() {
           <button className="mobile-toggle" type="button" aria-label={mobileOpen ? 'Close menu' : 'Open menu'} onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X /> : <Menu />}
           </button>
-          <a className="button button-small" href="https://wingmaster.zenfoody.com/">
+          <Link className="button button-small" href="/order">
             Order now <ArrowUpRight size={16} />
-          </a>
+          </Link>
         </div>
       </header>
       {mobileOpen && (
@@ -153,9 +99,9 @@ export default function Home() {
             house-made flavours—served hot, messy and exactly how you like them.
           </p>
           <div className="hero-actions">
-            <a className="button" href="https://wingmaster.zenfoody.com/">
+            <Link className="button" href="/order">
               Start your order <ArrowUpRight size={18} />
-            </a>
+            </Link>
             <a className="text-link" href="#flavours">Explore 200 flavours <span>↓</span></a>
           </div>
         </div>
@@ -187,7 +133,7 @@ export default function Home() {
           </div>
           <div className="heading-copy">
             <p>Every order starts crispy, gets tossed fresh, and lands in the flavour of your choice.</p>
-            <a className="arrow-link" href="https://wingmaster.ca/menu/">See the full menu <ArrowRight size={17} /></a>
+            <Link className="arrow-link" href="/order">See the full menu <ArrowRight size={17} /></Link>
           </div>
         </div>
 
@@ -202,7 +148,7 @@ export default function Home() {
               <div className="menu-copy">
                 <h3>{item.title}</h3>
                 <p>{item.copy}</p>
-                <a href="https://wingmaster.zenfoody.com/" aria-label={`Order ${item.title}`}><ArrowUpRight /></a>
+                <Link href={`/order?type=${item.slug}`} aria-label={`Order ${item.title}`}><ArrowUpRight /></Link>
               </div>
             </article>
           ))}
@@ -249,7 +195,7 @@ export default function Home() {
             <p><span className="legend-dot noheat" /> N — No heat</p>
             <p><span className="legend-dot spicy" /> S — Spicy</p>
             <p><span className="legend-dot hot" /> 3+ — Serious heat</p>
-            <a href="https://wingmaster.ca/flavours/">Open the full Wing Bible <ArrowRight size={16} /></a>
+            <Link href="/order">Open the full Wing Bible <ArrowRight size={16} /></Link>
           </div>
         </div>
       </section>
@@ -312,7 +258,7 @@ export default function Home() {
               <p>Tue–Thu: 3pm–11pm<br />Fri–Sun: 12pm–11pm<br />Monday: Closed</p>
             </div>
           </div>
-          <a className="button button-cream" href="https://wingmaster.zenfoody.com/">Order for pickup or delivery <ArrowRight size={17} /></a>
+          <Link className="button button-cream" href="/order">Order for pickup or delivery <ArrowRight size={17} /></Link>
         </div>
         <a className="map-card" href="https://maps.google.com/?q=70+Erie+Ave+Brantford+ON" aria-label="Open Wingmaster location in Google Maps">
           <div className="map-grid-lines" aria-hidden="true" />
@@ -344,7 +290,7 @@ export default function Home() {
           </div>
           <div className="footer-order">
             <p>Craving confirmed?</p>
-            <a className="button" href="https://wingmaster.zenfoody.com/">Order now <ArrowUpRight size={17} /></a>
+            <Link className="button" href="/order">Order now <ArrowUpRight size={17} /></Link>
           </div>
         </div>
         <div className="footer-bottom section-shell">

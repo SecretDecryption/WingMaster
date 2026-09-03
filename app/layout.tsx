@@ -14,13 +14,13 @@ export const metadata: Metadata = {
     title: 'Wingmaster | Brantford’s Original Wing Destination',
     description: 'Crispy wings, 200 original flavours, and one independently owned Brantford shop.',
     type: 'website',
-    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Wingmaster — Brantford’s original wing destination' }],
+    images: [{ url: '/wingmaster-logo.png', width: 1500, height: 1500, alt: 'Wingmaster logo' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Wingmaster | Brantford’s Original Wing Destination',
     description: 'Crispy wings, 200 original flavours, and one independently owned Brantford shop.',
-    images: ['/og.png'],
+    images: ['/wingmaster-logo.png'],
   },
 };
 

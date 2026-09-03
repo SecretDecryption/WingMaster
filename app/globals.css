@@ -127,7 +127,9 @@ h1 em { color: #ff4b38; font-style: normal; }
   .brand img { width: 70px; height: 70px; }
   .button-small { min-height: 42px; font-size: 10px; }
   .hero { min-height: 740px; align-items: flex-end; }
-  .hero-media { background-position: 66% center; }
+  /* Keep the red wing pile in frame on narrow screens instead of cropping into
+     the oversized white-sauce close-up on the right edge. */
+  .hero-media { background-position: 30% center; }
   .hero::before { background: linear-gradient(90deg, rgb(14 8 7 / 91%) 0%, rgb(20 10 7 / 65%) 72%, rgb(15 8 6 / 25%)), linear-gradient(0deg, rgb(14 8 6 / 90%) 4%, transparent 60%); }
   .hero-content { margin: 0 22px 160px; padding: 0; }
   h1 { font-size: clamp(56px, 18vw, 82px); }

@@ -3,8 +3,11 @@ import './globals.css';
 import './menu.css';
 import { OrderProvider } from '@/components/order-context';
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://wingmaster-brantford-redesign.manas-jassal.chatgpt.site');
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? 'https://wingmaster.ca'),
+  metadataBase: new URL(siteUrl),
   title: 'Wingmaster | Brantford’s Original Wing Destination',
   description: 'Crispy wings, bold house-made sauces, and 200 flavours from Brantford’s independently owned Wingmaster.',
   icons: {

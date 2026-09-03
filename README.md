@@ -11,4 +11,4 @@ The prices are a reference snapshot and need to be confirmed by Wingmaster befor
 
 ## Deploy to Vercel
 
-Import this folder into Vercel or upload the included ZIP. Vercel detects Next.js automatically and uses the included build settings. Set `NEXT_PUBLIC_SITE_URL` to the final HTTPS domain if you want the Open Graph metadata to use that domain.
+Import this folder into Vercel or upload the included ZIP. Vercel detects Next.js automatically and uses the included build settings. Set `NEXT_PUBLIC_SITE_URL` to the final HTTPS domain when you deploy. Vercel’s deployment URL is used automatically when available; the included Wingmaster preview URL is only a fallback for local previews. The share card uses the Wingmaster mark (the illustrated man holding a wing) from `public/wingmaster-logo.png`.

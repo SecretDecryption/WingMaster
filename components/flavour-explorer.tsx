@@ -2,7 +2,7 @@
 
 import { useId, useState } from 'react';
 import Link from 'next/link';
-import { ArrowUpRight, Check, Flame, Search, X } from 'lucide-react';
+import { ArrowUpRight, Check, Flame, Heart, LoaderCircle, Search, SlidersHorizontal, X } from 'lucide-react';
 import { filterFlavours, flavours, heatFilters, heatLabel, type HeatFilter } from '@/lib/flavours';
 import { useCustomer } from './customer-context';
 import { CustomerFeedback, FavouriteButton } from './favourite-button';
@@ -15,32 +15,41 @@ export function FlavourExplorer({ selected = [], onToggle, limit = 1, compact = 
   const [heat, setHeat] = useState<HeatFilter>('All heat');
   const [dry, setDry] = useState(false);
   const [popular, setPopular] = useState(false);
-  const [onlyFavourites, setOnlyFavourites] = useState(false);
-  const { user, favourites, dataState, refresh } = useCustomer();
+  const [onlySaved, setOnlySaved] = useState(false);
+  const { user, favourites, authLoading, dataState, refresh } = useCustomer();
   const [shown, setShown] = useState(compact ? 12 : 30);
-  const results = filterFlavours(query, heat, dry, popular).filter(flavour => !onlyFavourites || !user || favourites.includes(flavour.id));
+  const results = filterFlavours(query, heat, dry, popular, onlySaved ? (user && dataState === 'ready' ? favourites : []) : undefined);
+  const savedLoading = onlySaved && (authLoading || (user && dataState === 'loading'));
+  const savedSignIn = onlySaved && !authLoading && !user;
+  const savedError = onlySaved && user && dataState === 'error';
+  const hasFilters = Boolean(query || heat !== 'All heat' || dry || popular || onlySaved);
   const pageSize = compact ? 12 : 30;
-  function reset() { setQuery(''); setHeat('All heat'); setDry(false); setPopular(false); setOnlyFavourites(false); setShown(pageSize); }
+  function reset() { setQuery(''); setHeat('All heat'); setDry(false); setPopular(false); setOnlySaved(false); setShown(pageSize); }
   return <div className={`bible-explorer ${compact ? 'is-compact' : ''}`}>
     <CustomerFeedback />
-    {user && dataState === 'error' && <button className="menu-secondary" type="button" onClick={() => void refresh()}>Retry loading favourites</button>}
+    <div className="bible-filter-panel">
+    <div className="bible-filter-heading"><span><SlidersHorizontal size={17} aria-hidden="true" />Find your sauce</span>{hasFilters && <button type="button" onClick={reset}>Reset filters <X size={14} aria-hidden="true" /></button>}</div>
     <div className="bible-search"><Search size={20} aria-hidden="true" />
       <label className="sr-only" htmlFor={`${id}-search`}>Search flavours</label>
       <input id={`${id}-search`} type="search" placeholder="Find a flavour… BBQ, dill, honey" value={query} onChange={e => { setQuery(e.target.value); setShown(pageSize); }} />
       {query && <button type="button" aria-label="Clear flavour search" onClick={() => { setQuery(''); setShown(pageSize); }}><X size={18} /></button>}
     </div>
-    <div className="bible-filters" aria-label="Filter flavours by heat">
+    <div className="bible-filters" role="group" aria-label="Filter flavours by heat">
       {heatFilters.map(item => <button key={item} type="button" aria-pressed={heat === item} onClick={() => { setHeat(item); setShown(pageSize); }}>{item}</button>)}
     </div>
     <div className="bible-options">
+      <div className="bible-sauce-scope" role="group" aria-label="Sauce collection">
+        <button type="button" aria-pressed={!onlySaved} onClick={() => { setOnlySaved(false); setShown(pageSize); }}>All sauces</button>
+        <button type="button" aria-pressed={onlySaved} onClick={() => { setOnlySaved(true); setShown(pageSize); }}><Heart size={15} aria-hidden="true" />Your Sauces</button>
+      </div>
       <label><input type="checkbox" checked={popular} onChange={e => { setPopular(e.target.checked); setShown(pageSize); }} /> Top 10</label>
       <label><input type="checkbox" checked={dry} onChange={e => { setDry(e.target.checked); setShown(pageSize); }} /> Dry rubs</label>
-      {user ? <label><input type="checkbox" checked={onlyFavourites} disabled={dataState !== 'ready'} onChange={e => { setOnlyFavourites(e.target.checked); setShown(pageSize); }} /> My favourites</label> : <Link href="/profile" className="bible-saved-link">Sign in to save favourites</Link>}
-      <output>{results.length} flavour{results.length !== 1 ? 's' : ''}</output>
     </div>
+    </div>
+    <div className="bible-results-heading"><output aria-live="polite">{savedLoading ? 'Loading your sauces…' : savedSignIn ? 'Your saved collection' : savedError ? 'Your sauces are unavailable' : `${results.length} ${onlySaved ? 'saved ' : ''}flavour${results.length !== 1 ? 's' : ''}`}</output>{onToggle && <span>{selected.length} / {limit} selected</span>}</div>
     {onToggle && selected.length > 0 && <div className="bible-selected" aria-label="Selected flavours">{selected.map(key => <button type="button" key={key} onClick={() => onToggle(key)}>{flavours.find(f => f.id === key)?.name}<X size={14} /><span className="sr-only">Remove</span></button>)}</div>}
     {onToggle && <p className="bible-selection-hint">Choose {limit === 1 ? '1 flavour' : `up to ${limit} flavours`}. {selected.length} selected.</p>}
-    {results.length === 0 ? <div className="bible-empty"><h3>No flavours found.</h3><p>Try a different search or reset the filters.</p><button type="button" onClick={reset}>Reset filters</button></div> : <div className="bible-grid">
+    {savedLoading ? <output className="customer-loading"><LoaderCircle size={20} className="customer-spinner" aria-hidden="true" />Loading your sauces…</output> : savedSignIn ? <div className="bible-empty"><Heart size={26} aria-hidden="true" /><h3>Your sauces, right here.</h3><p>Sign in to see the sauces saved to your profile.</p><Link className="menu-primary" href="/your-sauces">Sign in to Your Sauces <ArrowUpRight size={16} /></Link></div> : savedError ? <div className="bible-empty"><h3>We couldn’t load your sauces.</h3><p>Your selection is still here. Try loading your saved sauces again.</p><button type="button" onClick={() => void refresh()}>Try again</button></div> : results.length === 0 ? <div className="bible-empty"><h3>{onlySaved && favourites.length === 0 ? 'Your lineup starts with a heart.' : 'No flavours match these filters.'}</h3><p>{onlySaved && favourites.length === 0 ? 'Browse all sauces and tap a heart to save one to Your Sauces.' : 'Try another heat level, search, or reset the filters.'}</p><button type="button" onClick={reset}>{onlySaved && favourites.length === 0 ? 'Explore all sauces' : 'Reset filters'}</button></div> : <div className="bible-grid">
       {results.slice(0, shown).map(f => {
         const isSelected = selected.includes(f.id);
         const disabled = !f.available || (!isSelected && selected.length >= limit);

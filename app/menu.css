@@ -34,6 +34,22 @@
 .bible-options label { display: flex; align-items: center; min-height: 32px; gap: 7px; }
 .bible-options input { width: 18px; height: 18px; accent-color: var(--primary); }
 .bible-options > span { margin-left: auto; color: var(--muted-foreground); }
+.bible-filter-panel { padding: 20px; border: 1px solid var(--border); background: #ebe1d2; margin-bottom: 18px; }
+.bible-filter-heading { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; font-size: .875rem; font-weight: 750; }
+.bible-filter-heading > span, .bible-filter-heading button { display: inline-flex; align-items: center; gap: 8px; }
+.bible-filter-heading button { min-height: 36px; padding: 5px 0; border: 0; background: transparent; color: #94291f; font-size: .875rem; text-decoration: underline; text-underline-offset: 3px; }
+.bible-filter-panel .bible-filters { margin-top: 14px; gap: 7px; }
+.bible-filter-panel .bible-filters button { border-radius: 999px; background: var(--card); }
+.bible-filter-panel .bible-filters button[aria-pressed=true] { background: var(--foreground); color: var(--card); }
+.bible-filter-panel .bible-options { gap: 12px 18px; padding: 15px 0 0; margin-top: 15px; border-top: 1px solid var(--border); }
+.bible-sauce-scope { display: inline-flex; padding: 3px; border: 1px solid var(--border); background: var(--card); border-radius: 6px; }
+.bible-sauce-scope button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 3px; padding: 10px 12px; min-height: 44px; background: transparent; color: #655c52; font-size: .875rem; font-weight: 750; }
+.bible-sauce-scope button[aria-pressed=true] { background: #b52b22; color: #fffaf0; }
+.bible-results-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 15px; font-size: .875rem; color: var(--muted-foreground); }
+.bible-results-heading > span { color: #8e2b21; font-weight: 750; white-space: nowrap; }
+.bible-filter-panel button:focus-visible { outline: 2px solid #b52b22; outline-offset: 3px; }
+.is-compact .bible-filter-panel { padding: 16px; }
+@media(max-width: 520px) { .bible-filter-panel, .is-compact .bible-filter-panel { padding: 14px; }.bible-filter-panel .bible-filters button { padding-inline: 12px; }.bible-sauce-scope { flex-basis: 100%; }.bible-sauce-scope button { flex: 1; }.bible-filter-panel .bible-options label { min-height: 44px; } }
 .bible-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
 .bible-card { display: flex; flex-direction: column; padding: 23px; border: 1px solid var(--border); background: var(--card); min-width: 0; }
 .bible-card:hover { border-color: #998c79; }

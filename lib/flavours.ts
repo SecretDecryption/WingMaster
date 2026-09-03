@@ -1995,7 +1995,8 @@ export function heatLabel(heat: string) {
 export function matchesHeat(heat: string, filter: HeatFilter) {
   return filter === 'All heat' || (filter === 'No heat' && heat === 'N') || (filter === 'Spicy' && heat === 'S') || (filter === 'Hot' && heat === 'H') || (filter === '1–3 flames' && ['1', '2', '3'].includes(heat)) || (filter === 'Extreme' && /[KM]/.test(heat));
 }
-export function filterFlavours(query: string, heat: HeatFilter, dry: boolean, popular: boolean) {
+export function filterFlavours(query: string, heat: HeatFilter, dry: boolean, popular: boolean, savedIds?: readonly string[]) {
   const q = query.toLowerCase().trim();
-  return flavours.filter(f => (!q || (f.name + ' ' + f.description).toLowerCase().includes(q)) && matchesHeat(f.heat, heat) && (!dry || f.dry) && (!popular || f.popular));
+  const saved = savedIds === undefined ? null : new Set(savedIds);
+  return flavours.filter(f => (!q || (f.name + ' ' + f.description).toLowerCase().includes(q)) && matchesHeat(f.heat, heat) && (!dry || f.dry) && (!popular || f.popular) && (!saved || saved.has(f.id)));
 }

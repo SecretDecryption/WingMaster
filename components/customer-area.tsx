@@ -58,9 +58,9 @@ function SignInForm() {
 
   return <div className="customer-signin-card">
     <div className="customer-round-icon"><Mail size={25} aria-hidden="true" /></div>
-    <h2>{sentTo ? 'Check your inbox.' : 'Your email. Your favourites.'}</h2>
+    <h2>{sentTo ? 'Check your inbox.' : 'Your email. Your Sauces.'}</h2>
     <p>{sentTo ? <>Enter the sign-in code sent to <strong>{sentTo}</strong>. Check your spam folder too.</> : 'Sign in or create your profile with a code sent to your email. No password to remember.'}</p>
-    {!configured && <output className="customer-setup"><strong>Customer accounts are coming soon.</strong><span>Sign-in and saving favourites aren’t available yet. You can still explore every sauce in the Wing Bible.</span></output>}
+    {!configured && <output className="customer-setup"><strong>Customer accounts are coming soon.</strong><span>Sign-in and saving sauces aren’t available yet. You can still explore every sauce in the Wing Bible.</span></output>}
     {sentTo ? <form onSubmit={verifyCode} className="customer-form">
       <label htmlFor="customer-code">Email sign-in code</label>
       <input ref={codeInput} id="customer-code" className="customer-code" type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9 ]{6,12}" maxLength={12} required value={code} onChange={event => setCode(event.target.value)} aria-describedby={error ? 'customer-signin-error' : undefined} />
@@ -70,7 +70,7 @@ function SignInForm() {
       <label htmlFor="customer-email">Email address</label>
       <input id="customer-email" type="email" autoComplete="email" placeholder="you@example.com" maxLength={254} required disabled={!configured || busy} value={email} onChange={event => setEmail(event.target.value)} aria-describedby={error ? 'customer-signin-error' : undefined} />
       <button type="submit" className="menu-primary" disabled={!configured || busy || cooldown > 0}>{busy ? <><LoaderCircle size={18} className="customer-spinner" /> Sending code…</> : cooldown > 0 ? `Try again in ${cooldown}s` : <>Send me a sign-in code <ArrowUpRight size={18} /></>}</button>
-      <p className="customer-fineprint">New here? Verifying your email creates your customer profile. Your favourites are only visible to you.</p>
+      <p className="customer-fineprint">New here? Verifying your email creates your customer profile. Your saved sauces are only visible to you.</p>
     </form>}
     {error && <p id="customer-signin-error" className="customer-error" role="alert">{error}</p>}
   </div>;
@@ -98,9 +98,9 @@ function SavedSauces() {
   const [query, setQuery] = useState('');
   const saved = favourites.flatMap(id => { const flavour = flavours.find(item => item.id === id); return flavour ? [flavour] : []; });
   const matches = saved.filter(flavour => `${flavour.name} ${flavour.description}`.toLowerCase().includes(query.toLowerCase().trim()));
-  return <section id="favourites" className="customer-saved">
-    <div className="customer-section-heading"><div><h2>Favourite sauces <span>{saved.length}</span></h2><p>Your go-to flavours, all in one place.</p></div><Link href="/flavours">Find more <ArrowUpRight size={17} /></Link></div>
-    {saved.length > 0 && <div className="bible-search"><Search size={19} aria-hidden="true" /><label className="sr-only" htmlFor="saved-sauce-search">Search your favourite sauces</label><input id="saved-sauce-search" type="search" value={query} placeholder="Find one of your favourites…" onChange={event => setQuery(event.target.value)} /></div>}
+  return <section id="your-sauces" className="customer-saved">
+    <div className="customer-section-heading"><div><h2>Your Sauces <span>{saved.length}</span></h2><p>Your go-to flavours, all in one place.</p></div><Link href="/flavours">Find more <ArrowUpRight size={17} /></Link></div>
+    {saved.length > 0 && <div className="bible-search"><Search size={19} aria-hidden="true" /><label className="sr-only" htmlFor="saved-sauce-search">Search your saved sauces</label><input id="saved-sauce-search" type="search" value={query} placeholder="Find one of your sauces…" onChange={event => setQuery(event.target.value)} /></div>}
     {!saved.length ? <div className="customer-empty"><Heart size={34} aria-hidden="true" /><h3>Meet your next regular.</h3><p>Tap the heart beside any flavour in the Wing Bible. It’ll be waiting right here next time.</p><Link className="menu-primary" href="/flavours">Explore the Wing Bible <ArrowUpRight size={18} /></Link></div> : !matches.length ? <div className="customer-empty"><h3>No saved sauces match “{query}”.</h3><button className="menu-secondary" onClick={() => setQuery('')} type="button">Clear search</button></div> : <div className="customer-sauce-grid">{matches.map(flavour => <article className="customer-sauce" key={flavour.id}>
       <div className="customer-sauce-top"><span className="customer-sauce-heat">{heatLabel(flavour.heat)}{flavour.dry && ' · Dry rub'}</span><FavouriteButton id={flavour.id} name={flavour.name} /></div>
       <h3>{flavour.name}</h3><p>{flavour.description || (flavour.dry ? 'One of your go-to dry rubs.' : 'One of your go-to sauces.')}</p>
@@ -120,16 +120,16 @@ export function CustomerArea({ view }: { view: 'profile' | 'favourites' }) {
     <div className="menu-app-top"><Link href="/"><ArrowLeft size={16} /> Back to Wingmaster</Link><span>Your flavour. Your way.</span></div>
     <header className="menu-app-header"><Link href="/" className="menu-app-brand"><Image src="/wingmaster-logo.png" alt="Wingmaster home" width={64} height={64} /></Link><nav aria-label="Menu navigation"><Link href="/flavours"><BookOpen size={16} /> Wing Bible</Link><Link href="/order">Food menu <ArrowUpRight size={16} /></Link></nav></header>
     <div className="customer-shell">
-      <div className="customer-heading"><p className="menu-eyebrow"><Heart size={17} /> A little extra sauce</p><h1>{view === 'favourites' ? <>Your favourite<br /><em>sauces.</em></> : <>Your Wingmaster.<br /><em>Your way.</em></>}</h1></div>
+      <div className="customer-heading"><p className="menu-eyebrow"><Heart size={17} /> A little extra sauce</p><h1>{view === 'favourites' ? <>Your<br /><em>Sauces.</em></> : <>Your Wingmaster.<br /><em>Your way.</em></>}</h1></div>
       <div className="customer-layout">
         <aside className="customer-sidebar"><div className="customer-identity"><div className="customer-avatar" aria-hidden="true">{profile?.display_name ? profile.display_name.slice(0, 1).toUpperCase() : <UserRound size={26} />}</div><div><strong>{user ? `Hey, ${firstName}.` : 'Make it your usual.'}</strong><span>{user ? 'Your Wingmaster profile' : 'A home for your favourite flavours'}</span></div></div>
-          <nav className="customer-nav" aria-label="Your account"><Link href="/profile" aria-current={view === 'profile' ? 'page' : undefined}><UserRound size={19} /> My profile</Link><Link href="/favourites" aria-current={view === 'favourites' ? 'page' : undefined}><Heart size={19} /> Favourite sauces {user && dataState === 'ready' && <b>{favourites.length}</b>}</Link><Link href="/flavours"><BookOpen size={19} /> Explore the Wing Bible</Link></nav>
+          <nav className="customer-nav" aria-label="Your account"><Link href="/profile" aria-current={view === 'profile' ? 'page' : undefined}><UserRound size={19} /> My profile</Link><Link href="/your-sauces" aria-current={view === 'favourites' ? 'page' : undefined}><Heart size={19} /> Your Sauces {user && dataState === 'ready' && <b>{favourites.length}</b>}</Link><Link href="/flavours"><BookOpen size={19} /> Explore the Wing Bible</Link></nav>
           {user && <button className="customer-signout" type="button" onClick={() => void leave()} disabled={signingOut}><LogOut size={17} />{signingOut ? 'Signing out…' : 'Sign out'}</button>}
           <p className="customer-private"><ShieldCheck size={17} /> Your profile and saved sauces are private to your account.</p>
         </aside>
         <div className="customer-main"><CustomerFeedback />
           {authLoading || (user && dataState === 'loading') ? <output className="customer-loading"><LoaderCircle className="customer-spinner" size={24} /> Loading your profile…</output> : !user ? <>{requestedSauce && <p className="customer-save-intent"><Heart size={18} /> Sign in to save <strong>{requestedSauce.name}</strong>.</p>}<SignInForm /></> : dataState === 'error' ? <div className="customer-empty"><h2>We couldn’t load your account.</h2><p>Please check your connection and try again.</p><button className="menu-primary" onClick={() => void refresh()} type="button">Try again</button></div> : <>
-            {requestedSauce && <div className="customer-save-intent"><Heart size={19} /><span>{favourites.includes(requestedSauce.id) ? 'Saved to your favourites:' : 'Save the sauce you picked:'} <strong>{requestedSauce.name}</strong></span><FavouriteButton id={requestedSauce.id} name={requestedSauce.name} /></div>}
+            {requestedSauce && <div className="customer-save-intent"><Heart size={19} /><span>{favourites.includes(requestedSauce.id) ? 'Saved to Your Sauces:' : 'Save the sauce you picked:'} <strong>{requestedSauce.name}</strong></span><FavouriteButton id={requestedSauce.id} name={requestedSauce.name} /></div>}
             {view === 'profile' && <ProfileForm key={user.id} />}
             <SavedSauces />
           </>}

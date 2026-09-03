@@ -80,7 +80,7 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
     } catch {
       if (generation.current !== request || identity.current !== owner) return;
       setDataState('error');
-      setError('We couldn’t load your profile and favourites. Check your connection and try again.');
+      setError('We couldn’t load your profile and saved sauces. Check your connection and try again.');
     }
   }, []);
 
@@ -113,7 +113,7 @@ export function CustomerProvider({ children }: { children: ReactNode }) {
       // Update only after the database confirms the change, never a pretend save.
       setSnapshot(current => current?.owner === owner ? { ...current, favourites: removing ? current.favourites.filter(item => item !== id) : [id, ...current.favourites.filter(item => item !== id)] } : current);
       const name = flavours.find(flavour => flavour.id === id)?.name ?? 'Sauce';
-      setNotice(`${name} ${removing ? 'removed from' : 'saved to'} your favourites.`);
+      setNotice(`${name} ${removing ? 'removed from' : 'saved to'} Your Sauces.`);
       return true;
     } catch {
       if (identity.current === owner && locks.current.get(id) === lock) setError('That change wasn’t saved. Please check your connection and try again.');

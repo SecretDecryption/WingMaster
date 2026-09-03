@@ -1,13 +1,25 @@
-# Turn on customer profiles and favourite sauces
+# Turn on customer profiles and Your Sauces
 
-The pages and account connection are built. Until the setup below is completed,
-the website honestly says customer accounts are coming soon. It does not create
-pretend accounts or store customer profiles/favourites only in a browser.
+The pages and account connection are built. The Wingmaster Supabase project,
+customer tables, ownership rules, and public connection settings have been added.
+Customer sign-in is not ready for launch: the email sender, code templates, and
+live two-account test still need completing. A configured public key alone does
+not mean email delivery works. Without connection settings, the site displays
+“Customer accounts are coming soon.” It does not create pretend accounts.
 
 Customers sign in using a code emailed to them. Once verified, they can edit
 their name and save/remove flavours. Favourites follow their account across
 devices. There are no payments, real orders, rewards, or order-history features
 in this update; ordering remains a clearly labelled demo.
+
+The customer-facing collection is called **Your Sauces** at `/your-sauces`.
+Existing `/favourites` bookmarks still open it. The homepage header and mobile
+menu link to it. The Wing Bible and order builder share search, heat, dry-rub,
+Top 10, and Your Sauces filters. Filtering does not remove selected order items
+or saved sauces. Internal table names and sauce IDs have not changed.
+
+Website profiles are separate from Zenfoody accounts. Do not claim payment
+details, logins, or carts sync between the two: no checkout handoff is connected.
 
 ## One-time setup
 

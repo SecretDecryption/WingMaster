@@ -6,6 +6,7 @@ import {
   Check,
   Clock3,
   Flame,
+  Heart,
   Menu,
   Phone,
   Quote,
@@ -73,22 +74,23 @@ export default function Home() {
           <a href="#visit">Visit</a>
         </nav>
         <div className="header-actions">
+          <Link className="header-sauces-link" href="/your-sauces"><Heart size={17} aria-hidden="true" /><span>Your Sauces</span></Link>
           <AccountLink />
-          <button className="mobile-toggle" type="button" aria-label={mobileOpen ? 'Close menu' : 'Open menu'} onClick={() => setMobileOpen(!mobileOpen)}>
+          <button className="mobile-toggle" type="button" aria-expanded={mobileOpen} aria-controls="mobile-menu" aria-label={mobileOpen ? 'Close menu' : 'Open menu'} onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X /> : <Menu />}
           </button>
-          <Link className="button button-small" href="/order">
+          <Link className="button button-small header-order-link" href="/order">
             Order now <ArrowUpRight size={16} />
           </Link>
         </div>
       </header>
       {mobileOpen && (
-        <div className="mobile-menu">
+        <div className="mobile-menu" id="mobile-menu">
           {['menu', 'flavours', 'story', 'visit'].map((item) => (
             <a key={item} href={`#${item}`} onClick={() => setMobileOpen(false)}>{item === 'story' ? 'Our story' : item}</a>
           ))}
           <Link href="/profile" onClick={() => setMobileOpen(false)}>My profile</Link>
-          <Link href="/favourites" onClick={() => setMobileOpen(false)}>Favourite sauces</Link>
+          <Link href="/your-sauces" onClick={() => setMobileOpen(false)}><Heart size={16} aria-hidden="true" />Your Sauces</Link>
           <a href="tel:5197501440"><Phone size={16} /> 519-750-1440</a>
         </div>
       )}
@@ -282,7 +284,7 @@ export default function Home() {
             <a href="#flavours">Flavours</a>
             <a href="#story">Our story</a>
             <a href="#visit">Visit</a>
-            <Link href="/favourites">Favourite sauces</Link>
+            <Link href="/your-sauces">Your Sauces</Link>
           </div>
           <div className="footer-links">
             <span>Talk to us</span>

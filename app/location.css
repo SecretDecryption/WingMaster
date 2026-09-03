@@ -1,0 +1,20 @@
+.directions-chooser { position: relative; color: inherit; }
+.directions-chooser summary { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; cursor: pointer; font-size: .875rem; list-style: none; }
+.directions-chooser summary::-webkit-details-marker { display: none; }
+.directions-chooser summary:focus-visible { outline: 3px solid #ff8a6c; outline-offset: 5px; }
+.directions-chooser summary > svg { flex-shrink: 0; }
+.directions-chooser summary > svg:last-child { transition: transform .15s; }
+.directions-chooser[open] summary > svg:last-child { transform: rotate(180deg); }
+.directions-options { position: absolute; z-index: 40; bottom: calc(100% + 12px); left: 0; width: 236px; max-width: calc(100vw - 36px); padding: 14px; border: 1px solid #d9c9b1; background: #fff5e7; color: #201612; box-shadow: 0 12px 36px #0004; }
+.directions-options p { margin: 0 0 7px; font-size: .8125rem; color: #6b5747; line-height: 1.5; }
+.directions-options a, .visit-grid .directions-options a { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 46px; padding: 10px 8px; color: #201612; font-size: .9375rem; letter-spacing: 0; font-weight: 700; text-transform: none; border: 0; }
+.directions-options a > svg:last-child { margin-left: auto; }.directions-options a:hover { background: #eee1cd; }
+.directions-options a:focus-visible { outline: 2px solid #b72b22; outline-offset: -2px; }
+.directions-hero summary { text-align: left; }.directions-hero summary b { text-decoration: underline; text-underline-offset: 5px; }
+.map-card.street-map-card { display: flex; flex-direction: column; min-width: 0; background: #f3ecdf; color: #211811; }
+.street-map-card iframe { display: block; width: 100%; flex: 1 1 auto; height: 550px; min-height: 360px; border: 0; }
+.street-map-footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 23px 26px; border-top: 1px solid #ccbea7; }
+.street-map-footer strong, .street-map-footer span { display: block; }.street-map-footer strong { font-size: 1.125rem; }.street-map-footer span { margin-top: 6px; color: #655642; font-size: .875rem; }
+.street-map-links { display: flex; flex-direction: column; gap: 3px; }.street-map-links a { display: inline-flex; align-items: center; justify-content: space-between; gap: 9px; color: #a5291c; font-size: .875rem; min-height: 44px; font-weight: 700; }
+@media(max-width: 760px) { .directions-hero .directions-options { left: auto; right: 0; }.street-map-card iframe { height: 390px; min-height: 390px; }.street-map-footer { padding: 20px; gap: 15px; flex-wrap: wrap; }.street-map-links { flex-direction: row; gap: 22px; } }
+@media(prefers-reduced-motion: reduce) { .directions-chooser summary > svg:last-child { transition: none; } }

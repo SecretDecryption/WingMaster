@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import './menu.css';
+import './location.css';
+import './customer.css';
 import { OrderProvider } from '@/components/order-context';
+import { CustomerProvider } from '@/components/customer-context';
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
-  ?? (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://wingmaster-brantford-redesign.manas-jassal.chatgpt.site');
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim()
+  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://wingmaster-brantford-redesign.manas-jassal.chatgpt.site');
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -35,7 +38,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <OrderProvider>{children}</OrderProvider>
+        <CustomerProvider><OrderProvider>{children}</OrderProvider></CustomerProvider>
       </body>
     </html>
   );

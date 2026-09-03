@@ -7,6 +7,7 @@ import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, ArrowRight, BookOpen, Check, ChevronRight, Info, MapPin, Minus, Plus, Search, ShoppingBag, Trash2 } from 'lucide-react';
 import { ItemBuilder } from '@/components/item-builder';
 import { useOrder } from '@/components/order-context';
+import { AccountLink } from '@/components/favourite-button';
 import { categories, menuItems, type MenuItem } from '@/lib/menu-data';
 import { flavours } from '@/lib/flavours';
 import { itemFor, lineDescription, linePrice, money, totals, type CartLine } from '@/lib/order-model';
@@ -56,7 +57,7 @@ function OrderMenu() {
   function startOver() { clear(); setStep('menu'); setTip(0); setDetails({ name: '', phone: '', email: '', street: '', city: '', postal: '', notes: '' }); }
   return <main className="menu-app">
     <div className="menu-app-top"><Link href="/"><ArrowLeft size={16} /> Back to Wingmaster</Link><span>70 Erie Ave. · Brantford</span></div>
-    <header className="menu-app-header"><Link href="/" className="menu-app-brand"><Image src="/wingmaster-logo.png" alt="Wingmaster home" width={64} height={64} /></Link><nav aria-label="Menu navigation"><Link href="/flavours"><BookOpen size={16} /> Wing Bible</Link><Link href="/order" aria-current="page" onClick={() => setStep('menu')}>Food menu</Link></nav></header>
+    <header className="menu-app-header"><Link href="/" className="menu-app-brand"><Image src="/wingmaster-logo.png" alt="Wingmaster home" width={64} height={64} /></Link><nav aria-label="Menu navigation"><Link href="/flavours"><BookOpen size={16} /> Wing Bible</Link><Link href="/order" aria-current="page" onClick={() => setStep('menu')}>Food menu</Link><AccountLink /></nav></header>
     <div className="demo-banner"><Info size={17} /><p><strong>Interactive demo.</strong> No orders are sent and no payments are taken. <a href="tel:5197501440">Call the shop for a real order.</a></p></div>
     <div className="menu-workspace">
       <div className="menu-heading"><div><p className="menu-eyebrow">{step === 'menu' ? 'Choose. Sauce. Make it yours.' : step === 'checkout' ? 'A final once-over' : 'Preview complete'}</p><h1 ref={stepHeading} tabIndex={-1}>{step === 'menu' ? <>Your kind<br />of <em>wing night.</em></> : step === 'checkout' ? <>Checkout<em> preview.</em></> : <>Looks <em>delicious.</em></>}</h1></div>{step === 'menu' && <a className="cart-jump" href="#demo-cart"><ShoppingBag size={20} />Your cart <b>{count}</b></a>}</div>

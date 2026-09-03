@@ -4,6 +4,8 @@ import { useId, useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Check, Flame, Search, X } from 'lucide-react';
 import { filterFlavours, flavours, heatFilters, heatLabel, type HeatFilter } from '@/lib/flavours';
+import { useCustomer } from './customer-context';
+import { CustomerFeedback, FavouriteButton } from './favourite-button';
 
 export function FlavourExplorer({ selected = [], onToggle, limit = 1, compact = false }: {
   selected?: string[]; onToggle?: (id: string) => void; limit?: number; compact?: boolean;
@@ -13,11 +15,15 @@ export function FlavourExplorer({ selected = [], onToggle, limit = 1, compact = 
   const [heat, setHeat] = useState<HeatFilter>('All heat');
   const [dry, setDry] = useState(false);
   const [popular, setPopular] = useState(false);
+  const [onlyFavourites, setOnlyFavourites] = useState(false);
+  const { user, favourites, dataState, refresh } = useCustomer();
   const [shown, setShown] = useState(compact ? 12 : 30);
-  const results = filterFlavours(query, heat, dry, popular);
+  const results = filterFlavours(query, heat, dry, popular).filter(flavour => !onlyFavourites || !user || favourites.includes(flavour.id));
   const pageSize = compact ? 12 : 30;
-  function reset() { setQuery(''); setHeat('All heat'); setDry(false); setPopular(false); setShown(pageSize); }
+  function reset() { setQuery(''); setHeat('All heat'); setDry(false); setPopular(false); setOnlyFavourites(false); setShown(pageSize); }
   return <div className={`bible-explorer ${compact ? 'is-compact' : ''}`}>
+    <CustomerFeedback />
+    {user && dataState === 'error' && <button className="menu-secondary" type="button" onClick={() => void refresh()}>Retry loading favourites</button>}
     <div className="bible-search"><Search size={20} aria-hidden="true" />
       <label className="sr-only" htmlFor={`${id}-search`}>Search flavours</label>
       <input id={`${id}-search`} type="search" placeholder="Find a flavour… BBQ, dill, honey" value={query} onChange={e => { setQuery(e.target.value); setShown(pageSize); }} />
@@ -29,7 +35,8 @@ export function FlavourExplorer({ selected = [], onToggle, limit = 1, compact = 
     <div className="bible-options">
       <label><input type="checkbox" checked={popular} onChange={e => { setPopular(e.target.checked); setShown(pageSize); }} /> Top 10</label>
       <label><input type="checkbox" checked={dry} onChange={e => { setDry(e.target.checked); setShown(pageSize); }} /> Dry rubs</label>
-      <span role="status">{results.length} flavour{results.length !== 1 ? 's' : ''}</span>
+      {user ? <label><input type="checkbox" checked={onlyFavourites} disabled={dataState !== 'ready'} onChange={e => { setOnlyFavourites(e.target.checked); setShown(pageSize); }} /> My favourites</label> : <Link href="/profile" className="bible-saved-link">Sign in to save favourites</Link>}
+      <output>{results.length} flavour{results.length !== 1 ? 's' : ''}</output>
     </div>
     {onToggle && selected.length > 0 && <div className="bible-selected" aria-label="Selected flavours">{selected.map(key => <button type="button" key={key} onClick={() => onToggle(key)}>{flavours.find(f => f.id === key)?.name}<X size={14} /><span className="sr-only">Remove</span></button>)}</div>}
     {onToggle && <p className="bible-selection-hint">Choose {limit === 1 ? '1 flavour' : `up to ${limit} flavours`}. {selected.length} selected.</p>}
@@ -38,7 +45,7 @@ export function FlavourExplorer({ selected = [], onToggle, limit = 1, compact = 
         const isSelected = selected.includes(f.id);
         const disabled = !f.available || (!isSelected && selected.length >= limit);
         return <article className={`bible-card ${isSelected ? 'is-selected' : ''}`} key={f.id}>
-          <div className="bible-card-meta"><span className={`heat-label heat-group-${f.heat === 'N' ? 'mild' : f.heat === 'D' ? 'dry' : 'hot'}`}><Flame size={13} />{heatLabel(f.heat)}</span>{f.popular && <span className="top-ten-label">Top 10</span>}</div>
+          <div className="bible-card-meta"><span className={`heat-label heat-group-${f.heat === 'N' ? 'mild' : f.heat === 'D' ? 'dry' : 'hot'}`}><Flame size={13} />{heatLabel(f.heat)}</span><div className="sauce-card-tools">{f.popular && <span className="top-ten-label">Top 10</span>}<FavouriteButton id={f.id} name={f.name} /></div></div>
           <h3>{f.name}</h3>
           {f.description && <p>{f.description}</p>}
           <div className="bible-card-bottom"><span>{!f.available ? 'Coming soon' : f.dry ? 'Dry rub' : f.name === 'Plain' ? 'No sauce' : 'Sauce'}{!f.available && ' · not selectable'}</span>

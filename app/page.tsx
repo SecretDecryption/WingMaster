@@ -6,7 +6,6 @@ import {
   Check,
   Clock3,
   Flame,
-  MapPin,
   Menu,
   Phone,
   Quote,
@@ -17,6 +16,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { FlavourTab, flavourSets, wingStyles } from '@/lib/data';
+import { AccountLink } from '@/components/favourite-button';
+import { HomeFavourites } from '@/components/home-favourites';
+import { DirectionsChooser, LocationMap } from '@/components/location-map';
 
 const menuItems = wingStyles;
 
@@ -71,6 +73,7 @@ export default function Home() {
           <a href="#visit">Visit</a>
         </nav>
         <div className="header-actions">
+          <AccountLink />
           <button className="mobile-toggle" type="button" aria-label={mobileOpen ? 'Close menu' : 'Open menu'} onClick={() => setMobileOpen(!mobileOpen)}>
             {mobileOpen ? <X /> : <Menu />}
           </button>
@@ -84,6 +87,8 @@ export default function Home() {
           {['menu', 'flavours', 'story', 'visit'].map((item) => (
             <a key={item} href={`#${item}`} onClick={() => setMobileOpen(false)}>{item === 'story' ? 'Our story' : item}</a>
           ))}
+          <Link href="/profile" onClick={() => setMobileOpen(false)}>My profile</Link>
+          <Link href="/favourites" onClick={() => setMobileOpen(false)}>Favourite sauces</Link>
           <a href="tel:5197501440"><Phone size={16} /> 519-750-1440</a>
         </div>
       )}
@@ -113,7 +118,7 @@ export default function Home() {
 
         <div className="hero-details">
           <div aria-live="polite"><Clock3 size={18} /><span><b>{storeStatus.label}</b> {storeStatus.detail}</span></div>
-          <div><MapPin size={18} /><span><b>Find us</b> 70 Erie Ave.</span></div>
+          <div><DirectionsChooser hero /></div>
           <div className="heat-note"><Flame size={18} /><span><b>Choose your heat</b> No heat to 10M</span></div>
         </div>
       </section>
@@ -200,6 +205,8 @@ export default function Home() {
         </div>
       </section>
 
+      <HomeFavourites />
+
       <section id="story" className="story-section section-shell">
         <div className="story-photo-wrap">
           <Image src="/party-tray.jpg" alt="A fresh Wingmaster party tray filled with wings" width={800} height={600} />
@@ -251,7 +258,7 @@ export default function Home() {
             <div>
               <span className="visit-label">Find us</span>
               <p>70 Erie Ave.<br />Brantford, ON N3S 2E8</p>
-              <a href="https://maps.google.com/?q=70+Erie+Ave+Brantford+ON">Get directions <ArrowUpRight size={15} /></a>
+              <DirectionsChooser />
             </div>
             <div>
               <span className="visit-label">Hours</span>
@@ -260,13 +267,7 @@ export default function Home() {
           </div>
           <Link className="button button-cream" href="/order">Order for pickup or delivery <ArrowRight size={17} /></Link>
         </div>
-        <a className="map-card" href="https://maps.google.com/?q=70+Erie+Ave+Brantford+ON" aria-label="Open Wingmaster location in Google Maps">
-          <div className="map-grid-lines" aria-hidden="true" />
-          <span className="map-road road-one" />
-          <span className="map-road road-two" />
-          <span className="map-pin"><MapPin size={24} fill="currentColor" /></span>
-          <div className="map-label"><Image src="/wingmaster-logo.png" alt="" width={1500} height={1500} /><span><strong>Wingmaster</strong>70 Erie Avenue</span></div>
-        </a>
+        <LocationMap />
       </section>
 
       <footer>
@@ -281,6 +282,7 @@ export default function Home() {
             <a href="#flavours">Flavours</a>
             <a href="#story">Our story</a>
             <a href="#visit">Visit</a>
+            <Link href="/favourites">Favourite sauces</Link>
           </div>
           <div className="footer-links">
             <span>Talk to us</span>

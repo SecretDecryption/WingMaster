@@ -102,7 +102,7 @@ export default function Home() {
             <Link className="button" href="/order">
               Start your order <ArrowUpRight size={18} />
             </Link>
-            <a className="text-link" href="#flavours">Explore 200 flavours <span>↓</span></a>
+            <Link className="text-link" href="/flavours">Explore the Wing Bible <span>↗</span></Link>
           </div>
         </div>
 
@@ -195,7 +195,7 @@ export default function Home() {
             <p><span className="legend-dot noheat" /> N — No heat</p>
             <p><span className="legend-dot spicy" /> S — Spicy</p>
             <p><span className="legend-dot hot" /> 3+ — Serious heat</p>
-            <Link href="/order">Open the full Wing Bible <ArrowRight size={16} /></Link>
+            <Link href="/flavours">Open the full Wing Bible <ArrowRight size={16} /></Link>
           </div>
         </div>
       </section>

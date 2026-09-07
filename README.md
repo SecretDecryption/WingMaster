@@ -4,10 +4,12 @@ This is the updated Next.js package for Vercel. It includes the supplied Wingmas
 
 - `/flavours` — the separate Wing Bible with searchable flavours, heat filters, dry-rub filter, and “Use this flavour” links.
 - `/order` — the food menu, portion and flavour builder, extras, cart, pickup/delivery preview, and demo checkout.
+- `/blackenstein` — the 10 Million Scoville challenge page, safety warning, and mandatory waiver acknowledgement.
+- `/profile` and `/your-sauces` — customer sign-in, profiles, and saved sauces.
 
 The checkout is intentionally a demo: it does not send orders, save customer information, or collect card details. Connect an approved restaurant ordering and payment provider before launch.
 
-The prices are a reference snapshot and need to be confirmed by Wingmaster before launch because their online menu and takeout PDF contain differences.
+All prices, menu options, heat ratings, waiver language, and availability need to be confirmed by Wingmaster before launch.
 
 ## Deploy to Vercel
 
@@ -23,8 +25,13 @@ alongside heat, dry rubs, Top 10, and search in the Wing Bible and order builder
 The Supabase database and public connection settings are prepared. Sign-in email
 delivery, code templates, and a live two-account test still need finishing.
 Follow `CUSTOMER-ACCOUNTS.md` before enabling sign-in for real customers. The
-public-only `.env.production` is included; hosting environment variables can
-override it. The ZIP contains no customer data or private keys.
+safe `.env.example` shows which Vercel environment variables to add. The ZIP
+contains no customer data, private keys, or local environment files.
 
 Website profiles remain separate from Zenfoody. Ordering is still a demo; no
 cart transfer, real-order submission, payment, or saved-card connection is built.
+
+The website waiver currently unlocks Blackenstein only for the active browser
+tab and does not store the customer’s typed details. Before launch, the owner
+should approve the final waiver with legal counsel and connect secure waiver
+records plus staff verification to the real ordering workflow.

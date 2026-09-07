@@ -118,7 +118,7 @@ export function CustomerArea({ view }: { view: 'profile' | 'favourites' }) {
   async function leave() { setSigningOut(true); try { await signOut(); } finally { setSigningOut(false); } }
   return <main className="menu-app customer-page">
     <div className="menu-app-top"><Link href="/"><ArrowLeft size={16} /> Back to Wingmaster</Link><span>Your flavour. Your way.</span></div>
-    <header className="menu-app-header"><Link href="/" className="menu-app-brand"><Image src="/wingmaster-logo.png" alt="Wingmaster home" width={64} height={64} /></Link><nav aria-label="Menu navigation"><Link href="/flavours"><BookOpen size={16} /> Wing Bible</Link><Link href="/order">Food menu <ArrowUpRight size={16} /></Link></nav></header>
+    <header className="menu-app-header"><Link href="/" className="menu-app-brand"><Image src="/wingmaster-logo.png" alt="Wingmaster home" width={64} height={64} /></Link><nav aria-label="Menu navigation"><Link href="/flavours"><BookOpen size={16} /> Wing Bible</Link><Link href="/blackenstein">Blackenstein</Link><Link href="/order">Food menu <ArrowUpRight size={16} /></Link></nav></header>
     <div className="customer-shell">
       <div className="customer-heading"><p className="menu-eyebrow"><Heart size={17} /> A little extra sauce</p><h1>{view === 'favourites' ? <>Your<br /><em>Sauces.</em></> : <>Your Wingmaster.<br /><em>Your way.</em></>}</h1></div>
       <div className="customer-layout">

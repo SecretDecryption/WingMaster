@@ -3,22 +3,25 @@
 import { Suspense, useEffect, useRef, useState, type FormEvent } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useSearchParams } from 'next/navigation';
-import { ArrowLeft, ArrowRight, BookOpen, Check, ChevronRight, Info, MapPin, Minus, Plus, Search, ShoppingBag, Trash2 } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { ArrowLeft, ArrowRight, BookOpen, Check, ChevronRight, Info, LockKeyhole, MapPin, Minus, Plus, Search, ShieldAlert, ShoppingBag, Trash2 } from 'lucide-react';
 import { ItemBuilder } from '@/components/item-builder';
 import { useOrder } from '@/components/order-context';
 import { AccountLink } from '@/components/favourite-button';
 import { categories, menuItems, type MenuItem } from '@/lib/menu-data';
 import { flavours } from '@/lib/flavours';
 import { itemFor, lineDescription, linePrice, money, totals, type CartLine } from '@/lib/order-model';
+import { BLACKENSTEIN_HEAT, hasCurrentBlackensteinWaiver, isBlackensteinItem } from '@/lib/blackenstein';
 
 type Step = 'menu' | 'checkout' | 'review';
 function OrderMenu() {
   const params = useSearchParams();
+  const router = useRouter();
   const flavourId = params.get('flavour');
   const requestedFlavour = flavours.find(f => f.id === flavourId && f.available);
   const requestedType = params.get('type');
-  const [category, setCategory] = useState('Wings');
+  const requestedCategory = params.get('category');
+  const [category, setCategory] = useState(() => requestedCategory && categories.includes(requestedCategory) ? requestedCategory : 'Wings');
   const [search, setSearch] = useState('');
   const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
   const [initialFlavour, setInitialFlavour] = useState<string | undefined>();
@@ -28,24 +31,44 @@ function OrderMenu() {
   const [tip, setTip] = useState(0);
   const [details, setDetails] = useState({ name: '', phone: '', email: '', street: '', city: '', postal: '', notes: '' });
   const [formError, setFormError] = useState('');
+  const [blackensteinWaiverAccepted, setBlackensteinWaiverAccepted] = useState(false);
   const { cart, add, changeQty, remove, clear } = useOrder();
   const summary = totals(cart, tip);
   const count = cart.reduce((sum, line) => sum + line.qty, 0);
   const stepHeading = useRef<HTMLHeadingElement>(null);
   const lastSelection = useRef('');
   const searchKey = params.toString();
+  useEffect(() => setBlackensteinWaiverAccepted(hasCurrentBlackensteinWaiver(window.sessionStorage)), []);
   useEffect(() => {
     if (!searchKey || lastSelection.current === searchKey) return;
     lastSelection.current = searchKey;
+    if (requestedCategory && categories.includes(requestedCategory)) setCategory(requestedCategory);
     if (requestedFlavour || requestedType) {
       setInitialFlavour(requestedFlavour?.id);
-      setActiveItem(menuItems.find(item => item.id === requestedType) ?? menuItems[0]);
+      const requestedItem = menuItems.find(item => item.id === requestedType) ?? menuItems[0];
+      if (isBlackensteinItem(requestedItem) && !hasCurrentBlackensteinWaiver(window.sessionStorage)) router.replace('/blackenstein#waiver');
+      else setActiveItem(requestedItem);
     }
-  }, [searchKey, requestedFlavour, requestedType]);
+  }, [searchKey, requestedCategory, requestedFlavour, requestedType, router]);
   useEffect(() => { if (step !== 'menu') { stepHeading.current?.focus(); window.scrollTo({ top: 0, behavior: 'instant' }); } }, [step]);
   useEffect(() => { if (!message) return; const timer = setTimeout(() => setMessage(''), 3500); return () => clearTimeout(timer); }, [message]);
   const filtered = menuItems.filter(item => search.trim() ? `${item.name} ${item.description} ${item.category}`.toLowerCase().includes(search.trim().toLowerCase()) : item.category === category);
-  function addItem(line: CartLine) { add(line); setMessage(`${itemFor(line).name} added to your demo cart.`); }
+  function openItem(item: MenuItem) {
+    if (isBlackensteinItem(item) && !blackensteinWaiverAccepted) {
+      router.push('/blackenstein#waiver');
+      return;
+    }
+    setInitialFlavour(undefined);
+    setActiveItem(item);
+  }
+  function addItem(line: CartLine) {
+    if (isBlackensteinItem(itemFor(line)) && !hasCurrentBlackensteinWaiver(window.sessionStorage)) {
+      setActiveItem(null);
+      router.push('/blackenstein#waiver');
+      return;
+    }
+    add(line); setMessage(`${itemFor(line).name} added to your demo cart.`);
+  }
   function review(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!cart.length) { setFormError('Add an item to your cart first.'); return; }
@@ -57,7 +80,7 @@ function OrderMenu() {
   function startOver() { clear(); setStep('menu'); setTip(0); setDetails({ name: '', phone: '', email: '', street: '', city: '', postal: '', notes: '' }); }
   return <main className="menu-app">
     <div className="menu-app-top"><Link href="/"><ArrowLeft size={16} /> Back to Wingmaster</Link><span>70 Erie Ave. · Brantford</span></div>
-    <header className="menu-app-header"><Link href="/" className="menu-app-brand"><Image src="/wingmaster-logo.png" alt="Wingmaster home" width={64} height={64} /></Link><nav aria-label="Menu navigation"><Link href="/flavours"><BookOpen size={16} /> Wing Bible</Link><Link href="/order" aria-current="page" onClick={() => setStep('menu')}>Food menu</Link><Link href="/your-sauces">Your Sauces</Link><AccountLink /></nav></header>
+    <header className="menu-app-header"><Link href="/" className="menu-app-brand"><Image src="/wingmaster-logo.png" alt="Wingmaster home" width={64} height={64} /></Link><nav aria-label="Menu navigation"><Link href="/flavours"><BookOpen size={16} /> Wing Bible</Link><Link href="/blackenstein">Blackenstein</Link><Link href="/order" aria-current="page" onClick={() => setStep('menu')}>Food menu</Link><Link href="/your-sauces">Your Sauces</Link><AccountLink /></nav></header>
     <div className="demo-banner"><Info size={17} /><p><strong>Interactive demo.</strong> No orders are sent and no payments are taken. <a href="tel:5197501440">Call the shop for a real order.</a></p></div>
     <div className="menu-workspace">
       <div className="menu-heading"><div><p className="menu-eyebrow">{step === 'menu' ? 'Choose. Sauce. Make it yours.' : step === 'checkout' ? 'A final once-over' : 'Preview complete'}</p><h1 ref={stepHeading} tabIndex={-1}>{step === 'menu' ? <>Your kind<br />of <em>wing night.</em></> : step === 'checkout' ? <>Checkout<em> preview.</em></> : <>Looks <em>delicious.</em></>}</h1></div>{step === 'menu' && <a className="cart-jump" href="#demo-cart"><ShoppingBag size={20} />Your cart <b>{count}</b></a>}</div>
@@ -74,13 +97,18 @@ function OrderMenu() {
           {step === 'menu' ? <>
             <div className="menu-food-search"><Search size={20} /><label className="sr-only" htmlFor="food-search">Search the food menu</label><input id="food-search" type="search" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search wings, fries, drinks…" /></div>
             <div className="menu-categories" aria-label="Food categories">{categories.map(cat => <button type="button" key={cat} aria-pressed={!search && category === cat} onClick={() => { setCategory(cat); setSearch(''); }}>{cat}</button>)}</div>
+            {!search && category === 'Blackenstein' && <div className={`blackenstein-menu-gate ${blackensteinWaiverAccepted ? 'is-unlocked' : ''}`}>
+              {blackensteinWaiverAccepted ? <Check size={24} /> : <ShieldAlert size={26} />}
+              <div><strong>{blackensteinWaiverAccepted ? 'Acknowledged for this visit.' : `Mandatory waiver · ${BLACKENSTEIN_HEAT}`}</strong><p>{blackensteinWaiverAccepted ? 'You may preview Blackenstein items. Restaurant staff must still verify the final signed waiver.' : 'Blackenstein is the hottest item at Wingmaster. Complete the acknowledgement before opening any item.'}</p></div>
+              {!blackensteinWaiverAccepted && <Link className="menu-primary" href="/blackenstein#waiver"><LockKeyhole size={16} /> Read waiver</Link>}
+            </div>}
             <div className="menu-section-title"><h2>{search ? 'Search results' : category}</h2><span role="status">{filtered.length} items</span></div>
-            {filtered.length === 0 ? <div className="bible-empty"><h3>No dishes found.</h3><p>Try another dish or browse a category.</p><button type="button" onClick={() => setSearch('')}>Clear search</button></div> : <div className="food-grid">{filtered.map(item => <button type="button" key={item.id} className={`food-card ${item.image ? 'food-card-photo' : ''}`} onClick={() => { setInitialFlavour(undefined); setActiveItem(item); }}>
+            {filtered.length === 0 ? <div className="bible-empty"><h3>No dishes found.</h3><p>Try another dish or browse a category.</p><button type="button" onClick={() => setSearch('')}>Clear search</button></div> : <div className="food-grid">{filtered.map(item => <button type="button" key={item.id} className={`food-card ${item.image ? 'food-card-photo' : ''} ${isBlackensteinItem(item) ? 'is-blackenstein' : ''}`} onClick={() => openItem(item)}>
               {item.image && <div className="food-image"><Image src={item.image} alt="" width={577} height={433} /></div>}
-              <div className="food-card-copy"><span className="food-category">{item.category}</span><h3>{item.name}</h3><p>{item.description}</p><div><strong>{item.variants ? 'From ' : ''}{money(item.price)}</strong><span className="food-add"><Plus size={20} /><span className="sr-only">Customize {item.name}</span></span></div></div>
+              <div className="food-card-copy"><span className="food-category">{item.category}</span><h3>{item.name}</h3><p>{item.description}</p><div><strong>{item.variants ? 'From ' : ''}{money(item.price)}</strong><span className="food-add">{isBlackensteinItem(item) && !blackensteinWaiverAccepted ? <LockKeyhole size={18} /> : <Plus size={20} />}<span className="sr-only">{isBlackensteinItem(item) && !blackensteinWaiverAccepted ? 'Waiver required for' : 'Customize'} {item.name}</span></span></div></div>
             </button>)}</div>}
             <Link className="bible-callout" href="/flavours"><BookOpen size={25} /><div><strong>Decisions, delicious decisions.</strong><span>Browse all {flavours.length} flavours in the Wing Bible.</span></div><ArrowRight size={22} /></Link>
-            <p className="menu-small-note">CAD. Menu-reference prices checked September 2, 2026. Some online and takeout prices differ; the shop must confirm pricing, options and availability before launch.</p>
+            <p className="menu-small-note">CAD. Preview pricing, options and availability must be confirmed by Wingmaster before launch.</p>
           </> : <section className="demo-checkout">
             <button className="menu-back" type="button" onClick={() => setStep('menu')}><ArrowLeft size={16} /> Back to menu</button>
             <form onSubmit={review}>

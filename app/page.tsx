@@ -10,6 +10,7 @@ import {
   Menu,
   Phone,
   Quote,
+  ShieldAlert,
   Star,
   X,
 } from 'lucide-react';
@@ -20,8 +21,15 @@ import { FlavourTab, flavourSets, wingStyles } from '@/lib/data';
 import { AccountLink } from '@/components/favourite-button';
 import { HomeFavourites } from '@/components/home-favourites';
 import { DirectionsChooser, LocationMap } from '@/components/location-map';
+import { SpiceLegend } from '@/components/spice-legend';
 
 const menuItems = wingStyles;
+const happenings = [
+  { eyebrow: '200+ choices', title: 'The full Wing Bible', copy: 'Search, filter and find the sauce calling your name.', image: '/breaded-wings.png', href: '/flavours', cta: 'Find your flavour' },
+  { eyebrow: 'For the whole crew', title: 'Party trays', copy: 'Big orders built for game nights, offices and hungry families.', image: '/party-tray.jpg', href: '#party', cta: 'See catering' },
+  { eyebrow: 'Your personal lineup', title: 'Your Sauces', copy: 'Save the flavours you love and order them again in a tap.', image: '/boneless-wings.png', href: '/your-sauces', cta: 'Open your sauces' },
+  { eyebrow: '10 Million Scoville', title: 'Blackenstein', copy: 'The hottest item at Wingmaster. Mandatory waiver.', image: '/blackenstein-challenge.png', href: '/blackenstein', cta: 'Enter if you dare' },
+];
 
 function getStoreStatus() {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -59,7 +67,7 @@ export default function Home() {
   return (
     <main>
       <div className="topline">
-        <p><span>Brantford&apos;s original wing destination</span><span className="topline-dot" /> Independently owned since 2005</p>
+        <p><span>Chicken wing artwork at its best.</span><span className="topline-dot" /> Brantford · Since 2005</p>
         <a href="tel:5197501440"><Phone size={14} /> 519-750-1440</a>
       </div>
 
@@ -70,8 +78,10 @@ export default function Home() {
         <nav aria-label="Primary navigation">
           <a href="#menu">Menu</a>
           <a href="#flavours">Flavours</a>
-          <a href="#story">Our story</a>
-          <a href="#visit">Visit</a>
+          <a href="#specials">Specials</a>
+          <Link href="/blackenstein">Blackenstein</Link>
+          <a href="#story">About</a>
+          <a href="#visit">Contact</a>
         </nav>
         <div className="header-actions">
           <Link className="header-sauces-link" href="/your-sauces"><Heart size={17} aria-hidden="true" /><span>Your Sauces</span></Link>
@@ -86,9 +96,10 @@ export default function Home() {
       </header>
       {mobileOpen && (
         <div className="mobile-menu" id="mobile-menu">
-          {['menu', 'flavours', 'story', 'visit'].map((item) => (
+          {['menu', 'flavours', 'specials', 'story', 'visit'].map((item) => (
             <a key={item} href={`#${item}`} onClick={() => setMobileOpen(false)}>{item === 'story' ? 'Our story' : item}</a>
           ))}
+          <Link href="/blackenstein" onClick={() => setMobileOpen(false)}>Blackenstein</Link>
           <Link href="/profile" onClick={() => setMobileOpen(false)}>My profile</Link>
           <Link href="/your-sauces" onClick={() => setMobileOpen(false)}><Heart size={16} aria-hidden="true" />Your Sauces</Link>
           <a href="tel:5197501440"><Phone size={16} /> 519-750-1440</a>
@@ -99,23 +110,21 @@ export default function Home() {
         <div className="hero-media" aria-hidden="true" />
         <div className="hero-grain" aria-hidden="true" />
         <div className="hero-content">
-          <div className="eyebrow"><span /> Flavour made here</div>
-          <h1>Worth the<br />sauce <em>stains.</em></h1>
-          <p>
-            Brantford&apos;s home for crispy wings and an outrageous lineup of
-            house-made flavours—served hot, messy and exactly how you like them.
-          </p>
+          <div className="eyebrow"><span /> Brantford&apos;s legendary wing shop</div>
+          <h1><em>200+ flavours.</em><br /><span>One legendary wing shop.</span></h1>
+          <p>Serving Brantford since 2005. Big wings, outrageous flavour, zero boring bites.</p>
           <div className="hero-actions">
             <Link className="button" href="/order">
-              Start your order <ArrowUpRight size={18} />
+              Order now <ArrowUpRight size={18} />
             </Link>
-            <Link className="text-link" href="/flavours">Explore the Wing Bible <span>↗</span></Link>
+            <a className="button button-outline" href="#menu">View menu</a>
+            <Link className="button button-outline" href="/flavours">Find your flavour</Link>
           </div>
         </div>
 
         <div className="hero-stamp" aria-label="Locally owned in Brantford">
-          <strong>Brantford</strong>
-          <span>Local &amp; proud</span>
+          <strong>It&apos;s a tremendous</strong>
+          <span>wing experience</span>
         </div>
 
         <div className="hero-details">
@@ -129,6 +138,16 @@ export default function Home() {
         <div>
           <span>200 flavours</span><b>◆</b><span>Fresh, never boring</span><b>◆</b><span>Brantford born</span><b>◆</b><span>Made by wing people</span><b>◆</b>
           <span aria-hidden="true">200 flavours</span><b aria-hidden="true">◆</b><span aria-hidden="true">Fresh, never boring</span><b aria-hidden="true">◆</b><span aria-hidden="true">Brantford born</span><b aria-hidden="true">◆</b><span aria-hidden="true">Made by wing people</span><b aria-hidden="true">◆</b>
+        </div>
+      </section>
+
+      <section id="specials" className="happenings section-shell">
+        <div className="happenings-heading"><h2>What&apos;s happening at Wingmaster.</h2><Link href="/order">See the full menu <ArrowRight size={16} /></Link></div>
+        <div className="happenings-grid">
+          {happenings.map(item => <Link className="happening-card" href={item.href} key={item.title}>
+            <Image src={item.image} alt="" width={600} height={420} />
+            <div><span>{item.eyebrow}</span><h3>{item.title}</h3><p>{item.copy}</p><b>{item.cta} <ArrowUpRight size={15} /></b></div>
+          </Link>)}
         </div>
       </section>
 
@@ -207,6 +226,17 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="blackenstein-band">
+        <div className="blackenstein-band-copy">
+          <p>The final level</p><h2>Blackenstein.</h2><strong>10 Million Scoville</strong>
+          <span>One way ticket. Straight to fire.</span>
+          <div><Link className="button button-outline" href="/blackenstein">Learn more</Link><Link className="button" href="/blackenstein#waiver">Read the waiver <ArrowRight size={17} /></Link></div>
+        </div>
+        <div className="blackenstein-band-warning"><ShieldAlert size={25} /><span>Mandatory waiver<br />before trying</span></div>
+      </section>
+
+      <div className="section-shell spice-home"><SpiceLegend /></div>
+
       <HomeFavourites />
 
       <section id="story" className="story-section section-shell">
@@ -236,7 +266,7 @@ export default function Home() {
         <p>— Tre “The Wingmaster” Jones</p>
       </section>
 
-      <section className="party-section section-shell">
+      <section id="party" className="party-section section-shell">
         <div>
           <p className="kicker">Feed the whole crew</p>
           <h2>Party trays that<br />show up big.</h2>
@@ -283,6 +313,7 @@ export default function Home() {
             <a href="#menu">Menu</a>
             <a href="#flavours">Flavours</a>
             <a href="#story">Our story</a>
+            <Link href="/blackenstein">Blackenstein</Link>
             <a href="#visit">Visit</a>
             <Link href="/your-sauces">Your Sauces</Link>
           </div>
@@ -298,7 +329,7 @@ export default function Home() {
           </div>
         </div>
         <div className="footer-bottom section-shell">
-          <span>© {new Date().getFullYear()} Wingmaster. Concept redesign.</span>
+          <span>© {new Date().getFullYear()} Wingmaster · Brantford, Ontario.</span>
           <a href="#top">Back to top ↑</a>
         </div>
       </footer>

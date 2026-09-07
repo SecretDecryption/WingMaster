@@ -1,13 +1,25 @@
 import type { Metadata } from 'next';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import './menu.css';
 import './location.css';
 import './customer.css';
+import './blackenstein.css';
 import { OrderProvider } from '@/components/order-context';
 import { CustomerProvider } from '@/components/customer-context';
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim()
   || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'https://wingmaster-brantford-redesign.manas-jassal.chatgpt.site');
+
+const geistSans = Geist({
+  variable: '--font-geist-sans',
+  subsets: ['latin'],
+});
+
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
+  subsets: ['latin'],
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -37,7 +49,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <CustomerProvider><OrderProvider>{children}</OrderProvider></CustomerProvider>
       </body>
     </html>

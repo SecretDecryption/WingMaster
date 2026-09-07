@@ -698,21 +698,24 @@ export const menuItems: MenuItem[] = [
     "name": "Blackenstein · 1 piece",
     "price": 899,
     "category": "Blackenstein",
-    "description": "Extreme heat, listed at 10M Scoville. Ask staff before ordering."
+    "image": "/blackenstein-challenge.png",
+    "description": "Wingmaster’s hottest item. 10 Million Scoville. A verified waiver is mandatory before ordering."
   },
   {
     "id": "black-sauce",
     "name": "Blackenstein · 1oz sauce",
     "price": 1099,
     "category": "Blackenstein",
-    "description": "Extreme heat, listed at 10M Scoville. Ask staff before ordering."
+    "image": "/blackenstein-challenge.png",
+    "description": "Wingmaster’s hottest sauce. 10 Million Scoville. A verified waiver is mandatory before ordering."
   },
   {
     "id": "black-poutine",
     "name": "Blackenstein poutine",
     "price": 1599,
     "category": "Blackenstein",
-    "description": "Extreme heat, listed at 10M Scoville. Ask staff before ordering."
+    "image": "/blackenstein-challenge.png",
+    "description": "Blackenstein heat over poutine. 10 Million Scoville. A verified waiver is mandatory before ordering."
   }
 ];
 export const cannedDrinks = ["Pepsi","Diet Pepsi","Mug Root Beer","Dr Pepper","Ginger Ale","7UP","Fuze Iced Tea","Coke"];

@@ -7,6 +7,13 @@ const input = await readFile(new URL('../lib/flavours.ts', import.meta.url), 'ut
 const { outputText } = ts.transpileModule(input, { compilerOptions: { module: ts.ModuleKind.ES2022, target: ts.ScriptTarget.ES2022 } });
 const { flavours, heatFilters, filterFlavours } = await import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`);
 
+test('every flavour has useful menu copy', () => {
+  assert.equal(flavours.length, 220);
+  assert.ok(flavours.every(flavour => flavour.description.trim().length > 0));
+  assert.equal(flavours.find(flavour => flavour.id === 'honey-garlic-n')?.description, 'This is LIQUID GOLD!');
+  assert.equal(flavours.find(flavour => flavour.id === 'smokey-bacon-n')?.description, 'Smoky bacon seasoning in a savoury dry rub');
+});
+
 test('every heat filter uses the same catalogue in the Wing Bible and order picker', () => {
   assert.deepEqual(heatFilters, ['All heat', 'No heat', 'Spicy', 'Hot', '1–3 flames', 'Extreme']);
   const predicates = {
